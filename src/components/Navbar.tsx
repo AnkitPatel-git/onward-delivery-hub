@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Package, Menu, X } from "lucide-react";
 
 const Navbar = () => {
@@ -27,15 +26,8 @@ const Navbar = () => {
             <a href="#partners" className="text-brand-dark hover:text-brand-orange transition-colors font-medium">Partners</a>
             <a href="#tracking" className="text-brand-dark hover:text-brand-orange transition-colors font-medium">Tracking</a>
             <a href="#testimonials" className="text-brand-dark hover:text-brand-orange transition-colors font-medium">Testimonials</a>
-          </div>
-          
-          <div className="hidden md:flex gap-4">
-            <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white">
-              Customer Login
-            </Button>
-            <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
-              Admin Portal
-            </Button>
+            <a href="#about" className="text-brand-dark hover:text-brand-orange transition-colors font-medium">About</a>
+            <a href="#contact" className="text-brand-dark hover:text-brand-orange transition-colors font-medium">Contact</a>
           </div>
           
           <button className="md:hidden text-brand-dark" onClick={toggleMenu}>
@@ -52,15 +44,8 @@ const Navbar = () => {
               <a href="#partners" className="text-brand-dark hover:text-brand-orange transition-colors font-medium" onClick={toggleMenu}>Partners</a>
               <a href="#tracking" className="text-brand-dark hover:text-brand-orange transition-colors font-medium" onClick={toggleMenu}>Tracking</a>
               <a href="#testimonials" className="text-brand-dark hover:text-brand-orange transition-colors font-medium" onClick={toggleMenu}>Testimonials</a>
-              
-              <div className="flex flex-col gap-2 mt-4">
-                <Button variant="outline" className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white w-full">
-                  Customer Login
-                </Button>
-                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white w-full">
-                  Admin Portal
-                </Button>
-              </div>
+              <a href="#about" className="text-brand-dark hover:text-brand-orange transition-colors font-medium" onClick={toggleMenu}>About</a>
+              <a href="#contact" className="text-brand-dark hover:text-brand-orange transition-colors font-medium" onClick={toggleMenu}>Contact</a>
             </div>
           </div>
         )}

@@ -5,7 +5,8 @@ import ServicesSection from "@/components/ServicesSection";
 import PartnersSection from "@/components/PartnersSection";
 import TrackingSection from "@/components/TrackingSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import PortalSection from "@/components/PortalSection";
+import AboutSection from "@/components/AboutSection";
+import ContactSection from "@/components/ContactSection";
 import MapSection from "@/components/MapSection";
 import Footer from "@/components/Footer";
 import LiveChat from "@/components/LiveChat";
@@ -21,7 +22,8 @@ const Index = () => {
         <TrackingSection />
         <MapSection />
         <TestimonialsSection />
-        <PortalSection />
+        <AboutSection />
+        <ContactSection />
       </main>
       <Footer />
       <LiveChat />
