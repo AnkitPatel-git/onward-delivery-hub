@@ -17,7 +17,7 @@ const Navbar = () => {
           <a href="/" className="flex items-center gap-2">
             <Package className="h-8 w-8 text-brand-orange" />
             <span className="text-xl font-bold text-brand-dark">
-              Onward<span className="text-brand-orange">Delivery</span>
+              Saitracksolution<span className="text-brand-orange">Hub</span>
             </span>
           </a>
           

@@ -1,4 +1,3 @@
-
 import { Package, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ const Footer = () => {
             <div className="flex items-center gap-2">
               <Package className="h-8 w-8 text-brand-orange" />
               <span className="text-xl font-bold">
-                Onward<span className="text-brand-orange">Delivery</span>
+                Saitracksolution<span className="text-brand-orange">Hub</span>
               </span>
             </div>
             <p className="text-gray-300">
@@ -88,7 +87,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-gray-400">
-          <p>&copy; 2025 Onward Delivery Hub. All rights reserved.</p>
+          <p>&copy; 2025 Saitracksolution Hub. All rights reserved.</p>
         </div>
       </div>
     </footer>
