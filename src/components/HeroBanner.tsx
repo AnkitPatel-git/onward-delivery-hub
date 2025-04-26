@@ -1,6 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useEffect } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -25,6 +25,18 @@ const HeroBanner = () => {
     }
   ];
 
+  const [api, setApi] = React.useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [api]);
+
   return (
     <section id="home" className="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-white via-brand-light-gray to-brand-light-orange/20">
       <div className="container mx-auto px-4">
@@ -48,7 +60,7 @@ const HeroBanner = () => {
             </div>
           </div>
           <div className="md:w-1/2 relative">
-            <Carousel className="w-full">
+            <Carousel className="w-full" setApi={setApi}>
               <CarouselContent>
                 {bannerImages.map((image, index) => (
                   <CarouselItem key={index}>
