@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Package, Menu, X } from "lucide-react";
 
@@ -16,7 +15,7 @@ const Navbar = () => {
           <a href="/" className="flex items-center gap-2">
             <Package className="h-8 w-8 text-brand-orange" />
             <span className="text-xl font-bold text-brand-dark">
-              Saitracksolution<span className="text-brand-orange">Hub</span>
+              Saitrack Solution
             </span>
           </a>
           
@@ -35,7 +34,6 @@ const Navbar = () => {
           </button>
         </div>
         
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 animate-fade-in">
             <div className="flex flex-col gap-4">
