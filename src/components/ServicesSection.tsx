@@ -18,6 +18,7 @@ const services = [
     title: "Rail Cargo",
     description: "Bulk consignment transport via Indian Railways' vast network including dedicated freight corridors, container services, and parcel services, with last-mile delivery through our local vehicles across India.",
     icon: TrainFront,
+  },
   {
     title: "Pickup Services",
     description: "Scheduled pickup from multiple locations with real-time tracking and instant notifications.",
