@@ -1,9 +1,14 @@
 
-import { Package, Truck, MapPin, Warehouse, Calendar } from "lucide-react";
+import { Package, Truck, MapPin, Warehouse, Calendar, Plane } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const services = [
+  {
+    title: "Air Cargo",
+    description: "Swift and efficient air cargo solutions for perishable goods, electronics, pharmaceuticals, and oversized cargo with real-time status reports on all import and export shipments.",
+    icon: Plane,
+  },
   {
     title: "Pickup Services",
     description: "Scheduled pickup from multiple locations with real-time tracking and instant notifications.",
