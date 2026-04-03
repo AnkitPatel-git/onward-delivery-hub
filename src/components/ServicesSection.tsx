@@ -1,5 +1,5 @@
 
-import { Package, Truck, MapPin, Warehouse, Calendar, Plane } from "lucide-react";
+import { Package, Truck, MapPin, Warehouse, Calendar, Plane, TrainFront } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -13,6 +13,11 @@ const services = [
     title: "Surface Cargo",
     description: "Road transportation connecting all major Indian cities into a single network. Reliable door-to-door solutions for time-critical packages with online tracking, supported by our own fleet of trucks, trailers, and container LCVs.",
     icon: Truck,
+  },
+  {
+    title: "Rail Cargo",
+    description: "Bulk consignment transport via Indian Railways' vast network including dedicated freight corridors, container services, and parcel services, with last-mile delivery through our local vehicles across India.",
+    icon: TrainFront,
   },
   {
     title: "Pickup Services",
