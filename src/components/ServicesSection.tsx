@@ -35,8 +35,8 @@ const services = [
     icon: Truck,
   },
   {
-    title: "Warehousing",
-    description: "State-of-the-art warehousing facilities with inventory management and distribution services.",
+    title: "Warehouse Services",
+    description: "Modern warehousing facilities across India with inventory management, real-time stock monitoring, and efficient distribution. Services include short & long-term storage, cargo loading/unloading, labeling, packing, distribution, POD reporting, and CCTV coverage.",
     icon: Warehouse,
   },
   {
