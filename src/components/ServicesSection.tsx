@@ -1,5 +1,5 @@
 
-import { Package, Truck, MapPin, Warehouse, Calendar, Plane } from "lucide-react";
+import { Package, Truck, MapPin, Warehouse, Calendar, Plane, TrainFront } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
