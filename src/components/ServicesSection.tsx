@@ -10,6 +10,11 @@ const services = [
     icon: Plane,
   },
   {
+    title: "Surface Cargo",
+    description: "Road transportation connecting all major Indian cities into a single network. Reliable door-to-door solutions for time-critical packages with online tracking, supported by our own fleet of trucks, trailers, and container LCVs.",
+    icon: Truck,
+  },
+  {
     title: "Pickup Services",
     description: "Scheduled pickup from multiple locations with real-time tracking and instant notifications.",
     icon: Package,
