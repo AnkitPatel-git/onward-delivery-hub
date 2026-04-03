@@ -66,7 +66,7 @@ const ContactSection = () => {
                   <MapPin className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Address</h4>
-                    <p className="text-brand-gray">123 Logistics Way, Suite 500<br />New York, NY 10001</p>
+                    <p className="text-brand-gray">Balaji Complex, Near Pandharpuri Tea Shop,<br />Bhatale Vehele Village, Mankoli Naka,<br />Bhiwandi, Thane - 421302</p>
                   </div>
                 </div>
                 
@@ -74,7 +74,7 @@ const ContactSection = () => {
                   <Phone className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Phone</h4>
-                    <p className="text-brand-gray">+1 (800) 123-4567</p>
+                    <p className="text-brand-gray">+91 8828834134 (Laxmi Singh)</p>
                   </div>
                 </div>
                 
@@ -82,7 +82,7 @@ const ContactSection = () => {
                   <Mail className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-brand-gray">info@saitracksolution.com</p>
+                    <p className="text-brand-gray">laxmi@saitracksolutions.com</p>
                   </div>
                 </div>
               </div>
