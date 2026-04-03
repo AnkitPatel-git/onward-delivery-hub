@@ -52,8 +52,8 @@ const Footer = () => {
           {/* Brand column */}
           <div className="space-y-5">
             <img
-              src="/Saitrack Solutions LOGO.png"
-              alt="Saitrack Solutions"
+              src="/SaiTrackSolutions LOGO.png"
+              alt="SaiTrackSolutions"
               className="h-14 w-auto object-contain brightness-0 invert"
             />
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -151,7 +151,7 @@ const Footer = () => {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500">
-          <p>© 2025 Saitrack Solutions. All rights reserved.</p>
+          <p>© 2025 SaiTrackSolutions. All rights reserved.</p>
           <p>Bhiwandi, Thane — Maharashtra, India</p>
         </div>
       </div>

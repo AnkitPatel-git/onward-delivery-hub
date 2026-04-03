@@ -124,7 +124,7 @@ const TrackingSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                   <div className="p-4">
                     <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship From</p>
-                    <p className="font-semibold text-brand-dark">Saitrack Solutions</p>
+                    <p className="font-semibold text-brand-dark">SaiTrackSolutions</p>
                   <p className="text-sm text-brand-gray">Balaji Complex, Mankoli Naka</p>
                   <p className="text-sm text-brand-gray">Bhiwandi, Thane — 421302</p>
                   </div>

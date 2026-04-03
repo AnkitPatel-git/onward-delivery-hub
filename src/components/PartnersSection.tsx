@@ -40,7 +40,7 @@ const PartnersSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left: Benefits */}
           <div className="space-y-5">
-            <h3 className="text-xl font-bold text-brand-dark mb-6">Why Partner With Saitrack?</h3>
+            <h3 className="text-xl font-bold text-brand-dark mb-6">Why Partner With SaiTrackSolutions?</h3>
             {benefits.map((benefit, i) => (
               <div key={i} className="flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-brand-orange flex-shrink-0 mt-0.5" />

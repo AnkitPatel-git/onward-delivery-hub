@@ -34,8 +34,8 @@ const Navbar = () => {
           {/* Logo */}
           <a href="/" className="flex items-center">
             <img
-              src="/Saitrack Solutions LOGO.png"
-              alt="Saitrack Solutions"
+              src="/SaiTrackSolutions LOGO.png"
+              alt="SaiTrackSolutions"
               className={`object-contain transition-all duration-300 ${
                 scrolled ? "h-12" : "h-14"
               }`}

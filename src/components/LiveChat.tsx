@@ -9,7 +9,7 @@ const LiveChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([
-    { id: 1, text: "👋 Welcome to Saitrack Solutions! How can we help you with your logistics needs today?", isAgent: true },
+    { id: 1, text: "👋 Welcome to SaiTrackSolutions! How can we help you with your logistics needs today?", isAgent: true },
   ]);
 
   const toggleChat = () => {

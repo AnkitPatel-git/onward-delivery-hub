@@ -17,7 +17,7 @@ const AboutSection = () => {
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-brand-dark">Who We Are</h3>
             <p className="text-brand-gray leading-relaxed">
-              Saitrack Solutions has been offering PAN India Courier &amp; Cargo solutions since 2018, designed to optimize the distribution process from pickup to delivery globally. We are an organization structured to provide services related to an "end-to-end" logistics concept, enabling us to provide our clients &amp; partners a one-stop platform.
+              SaiTrackSolutions has been offering PAN India Courier &amp; Cargo solutions since 2018, designed to optimize the distribution process from pickup to delivery globally. We are an organization structured to provide services related to an "end-to-end" logistics concept, enabling us to provide our clients &amp; partners a one-stop platform.
             </p>
             <p className="text-brand-gray leading-relaxed">
               Our expertise spans a broad range of industries including Infrastructure, Automobile, Iron &amp; Steel, Wind Power, Consumer Durable, Agro Products, Aviation, and Ceramics.
@@ -36,7 +36,7 @@ const AboutSection = () => {
               Our comprehensive range of services includes transportation, warehousing, inventory management, customs clearance, and supply chain consulting. Whether you require domestic or international logistics support, we have the knowledge and resources to ensure your goods reach their destination safely and on time.
             </p>
             <p className="text-brand-gray leading-relaxed">
-              The real attribute to the success of Saitrack Solutions is its willingness to upgrade the systems with changing times and also to incorporate fresh and innovative ideas to make its presence felt.
+              The real attribute to the success of SaiTrackSolutions is its willingness to upgrade the systems with changing times and also to incorporate fresh and innovative ideas to make its presence felt.
             </p>
           </div>
         </div>
@@ -75,7 +75,7 @@ const AboutSection = () => {
               </div>
               <div className="w-12 h-1 bg-brand-orange rounded mb-5" />
               <p className="text-brand-gray leading-relaxed">
-                To direct all our organizational efforts at building upon the existing organizational strengths and brand recognition to achieve enhanced levels of profitable growth in the core business and diversify into new areas that complement and supplement the core business — with the diversification aimed at achieving excellence and industry leader status. The Saitrack Solutions people will be encouraged to be open to unconventional ideas and recognize new trends at very early stages.
+                To direct all our organizational efforts at building upon the existing organizational strengths and brand recognition to achieve enhanced levels of profitable growth in the core business and diversify into new areas that complement and supplement the core business — with the diversification aimed at achieving excellence and industry leader status. The SaiTrackSolutions people will be encouraged to be open to unconventional ideas and recognize new trends at very early stages.
               </p>
             </div>
           </div>
@@ -92,7 +92,7 @@ const AboutSection = () => {
               </div>
               <div className="w-12 h-1 bg-brand-orange rounded mb-5" />
               <p className="text-brand-gray leading-relaxed">
-                Saitrack Solutions will be recognized and respected as a professional, innovative, profitable, and knowledge-based courier &amp; logistic service enterprise. We embed internet-based technologies into our internal operating structures and as business solutions for customers — with customer, employee, and shareholder interests at the core of our operations — demonstrating a clear concern for ethical conduct and good corporate citizenship, growing into a regional and global player.
+                SaiTrackSolutions will be recognized and respected as a professional, innovative, profitable, and knowledge-based courier &amp; logistic service enterprise. We embed internet-based technologies into our internal operating structures and as business solutions for customers — with customer, employee, and shareholder interests at the core of our operations — demonstrating a clear concern for ethical conduct and good corporate citizenship, growing into a regional and global player.
               </p>
             </div>
           </div>
