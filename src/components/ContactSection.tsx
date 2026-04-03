@@ -66,7 +66,7 @@ const ContactSection = () => {
                   <MapPin className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Address</h4>
-                    <p className="text-brand-gray">123 Logistics Way, Suite 500<br />New York, NY 10001</p>
+                    <p className="text-brand-gray">Balaji Complex, Near Pandharpuri Tea Shop,<br />Bhatale Vehele Village, Mankoli Naka,<br />Bhiwandi, Thane - 421302</p>
                   </div>
                 </div>
                 
