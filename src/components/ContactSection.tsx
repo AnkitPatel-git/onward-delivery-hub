@@ -74,7 +74,7 @@ const ContactSection = () => {
                   <Phone className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Phone</h4>
-                    <p className="text-brand-gray">+1 (800) 123-4567</p>
+                    <p className="text-brand-gray">+91 8828834134 (Laxmi Singh)</p>
                   </div>
                 </div>
                 
