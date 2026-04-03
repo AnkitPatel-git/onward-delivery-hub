@@ -82,7 +82,7 @@ const ContactSection = () => {
                   <Mail className="h-6 w-6 text-brand-orange" />
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-brand-gray">info@saitracksolution.com</p>
+                    <p className="text-brand-gray">laxmi@saitracksolutions.com</p>
                   </div>
                 </div>
               </div>
