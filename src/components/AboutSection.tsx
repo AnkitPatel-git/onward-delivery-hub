@@ -1,3 +1,4 @@
+import { Target, Eye } from "lucide-react";
 
 const AboutSection = () => {
   return (
@@ -8,7 +9,7 @@ const AboutSection = () => {
             About <span className="text-brand-orange">Us</span>
           </h2>
           <p className="text-brand-gray max-w-3xl mx-auto">
-            Your trusted partner in PAN India Courier & Cargo solutions since 2018.
+            Your trusted partner in PAN India Courier &amp; Cargo solutions since 2018.
           </p>
         </div>
 
@@ -16,10 +17,10 @@ const AboutSection = () => {
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-brand-dark">Who We Are</h3>
             <p className="text-brand-gray leading-relaxed">
-              Saitrack Solutions has been offering PAN India Courier & Cargo solutions since 2018, designed to optimize the distribution process from pickup to delivery globally. We are an organization structured to provide services related to an "end-to-end" logistics concept, enabling us to provide our clients & partners a one-stop platform.
+              Saitrack Solutions has been offering PAN India Courier &amp; Cargo solutions since 2018, designed to optimize the distribution process from pickup to delivery globally. We are an organization structured to provide services related to an "end-to-end" logistics concept, enabling us to provide our clients &amp; partners a one-stop platform.
             </p>
             <p className="text-brand-gray leading-relaxed">
-              Our expertise spans a broad range of industries including Infrastructure, Automobile, Iron & Steel, Wind Power, Consumer Durable, Agro Products, Aviation, and Ceramics.
+              Our expertise spans a broad range of industries including Infrastructure, Automobile, Iron &amp; Steel, Wind Power, Consumer Durable, Agro Products, Aviation, and Ceramics.
             </p>
             <p className="text-brand-gray leading-relaxed">
               The company came into existence as a result of the owners' vision of providing affordable couriers and logistics services to corporate as well as individual retail customers. We have created a niche in the Indian markets for the last 7+ years primarily because of our innovative and uncompromising services.
@@ -40,6 +41,7 @@ const AboutSection = () => {
           </div>
         </div>
 
+        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
           <div className="p-6 bg-gray-50 rounded-lg text-center">
             <h4 className="text-3xl font-bold text-brand-orange mb-1">7+</h4>
@@ -56,23 +58,45 @@ const AboutSection = () => {
           <div className="p-6 bg-gray-50 rounded-lg text-center">
             <h4 className="text-3xl font-bold text-brand-orange mb-1">E2E</h4>
             <p className="text-brand-gray text-sm">Logistics Solutions</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
-          <div className="p-8 bg-gray-50 rounded-lg">
-            <h3 className="text-2xl font-bold text-brand-dark mb-4">Our Mission</h3>
-            <p className="text-brand-gray leading-relaxed italic">
-              "To direct all our organizational efforts at building upon the existing organizational strengths and brand recognition to achieve enhanced levels of profitable growth in the core business and diversify into new areas that complement and supplement the core business with the diversification aimed at achieving excellence and industry leader status in the new areas. The Saitrack Solutions people will however be encouraged to be open to unconventional ideas and services and recognize new trends at very early stages."
-            </p>
+        {/* Mission & Vision */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
+          {/* Mission Card */}
+          <div className="relative bg-white rounded-2xl shadow-lg border-t-4 border-brand-orange overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full opacity-60" />
+            <div className="p-8 relative">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="flex-shrink-0 h-12 w-12 bg-brand-orange rounded-xl flex items-center justify-center shadow-md">
+                  <Target className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-brand-dark">Our Mission</h3>
+              </div>
+              <div className="w-12 h-1 bg-brand-orange rounded mb-5" />
+              <p className="text-brand-gray leading-relaxed">
+                To direct all our organizational efforts at building upon the existing organizational strengths and brand recognition to achieve enhanced levels of profitable growth in the core business and diversify into new areas that complement and supplement the core business — with the diversification aimed at achieving excellence and industry leader status. The Saitrack Solutions people will be encouraged to be open to unconventional ideas and recognize new trends at very early stages.
+              </p>
+            </div>
           </div>
-          <div className="p-8 bg-gray-50 rounded-lg">
-            <h3 className="text-2xl font-bold text-brand-dark mb-4">Our Vision</h3>
-            <p className="text-brand-gray leading-relaxed italic">
-              "Saitrack Solutions will be recognized and respected as a professional, innovative, profitable, and knowledge-based courier & logistic service enterprise. Saitrack Solutions embeds internet-based technologies into its internal operating structures and as business solutions for customers; with customer, employee, and shareholder interests at the core of its operations; demonstrating a clear concern for ethical conduct and good corporate citizenship; to grow into a regional and global player."
-            </p>
+
+          {/* Vision Card */}
+          <div className="relative bg-white rounded-2xl shadow-lg border-t-4 border-brand-orange overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full opacity-60" />
+            <div className="p-8 relative">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="flex-shrink-0 h-12 w-12 bg-brand-orange rounded-xl flex items-center justify-center shadow-md">
+                  <Eye className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-brand-dark">Our Vision</h3>
+              </div>
+              <div className="w-12 h-1 bg-brand-orange rounded mb-5" />
+              <p className="text-brand-gray leading-relaxed">
+                Saitrack Solutions will be recognized and respected as a professional, innovative, profitable, and knowledge-based courier &amp; logistic service enterprise. We embed internet-based technologies into our internal operating structures and as business solutions for customers — with customer, employee, and shareholder interests at the core of our operations — demonstrating a clear concern for ethical conduct and good corporate citizenship, growing into a regional and global player.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

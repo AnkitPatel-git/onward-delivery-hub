@@ -4,7 +4,7 @@ import HeroBanner from "@/components/HeroBanner";
 import ServicesSection from "@/components/ServicesSection";
 import PartnersSection from "@/components/PartnersSection";
 import TrackingSection from "@/components/TrackingSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
+
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 import MapSection from "@/components/MapSection";

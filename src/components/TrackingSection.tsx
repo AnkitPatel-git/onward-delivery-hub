@@ -11,9 +11,7 @@ const TrackingSection = () => {
 
   const handleTracking = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!trackingNumber.trim()) return;
-    
     setIsTracking(true);
     setTimeout(() => {
       setIsTracking(false);
@@ -25,6 +23,13 @@ const TrackingSection = () => {
     setTrackingNumber("");
     setShowDemo(false);
   };
+
+  const steps = [
+    { label: "Picked Up", icon: Package, done: true },
+    { label: "In Transit", icon: Truck, done: true },
+    { label: "Out for Delivery", icon: MapPin, done: true },
+    { label: "Delivered", icon: Check, done: false },
+  ];
 
   return (
     <section id="tracking" className="py-16 bg-white">
@@ -42,15 +47,15 @@ const TrackingSection = () => {
         {!showDemo ? (
           <div className="max-w-md mx-auto">
             <form onSubmit={handleTracking} className="flex gap-4 mb-4">
-              <Input 
-                type="text" 
-                placeholder="Enter tracking number" 
-                value={trackingNumber} 
+              <Input
+                type="text"
+                placeholder="Enter tracking number"
+                value={trackingNumber}
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 className="flex-1"
               />
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="bg-brand-orange hover:bg-brand-orange/90 text-white min-w-24"
                 disabled={isTracking}
               >
@@ -58,91 +63,83 @@ const TrackingSection = () => {
               </Button>
             </form>
             <p className="text-sm text-brand-gray text-center">
-              Try demo: ODH12345678
+              Try demo: <span
+                className="text-brand-orange font-semibold cursor-pointer hover:underline"
+                onClick={() => setTrackingNumber("ODH12345678")}
+              >ODH12345678</span>
             </p>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-6">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            {/* Header */}
+            <div className="bg-brand-orange px-6 py-4 flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-lg">Tracking Number: {trackingNumber}</h3>
-                <p className="text-brand-gray">Estimated Delivery: April 28, 2025</p>
+                <p className="text-white/80 text-sm">Tracking ID</p>
+                <h3 className="font-bold text-white text-lg">{trackingNumber}</h3>
               </div>
-              <Button variant="outline" onClick={resetDemo}>
-                Track Another
+              <div className="text-right">
+                <p className="text-white/80 text-sm">Est. Delivery</p>
+                <p className="text-white font-semibold">6 April 2025</p>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Progress bar */}
+              <div className="relative mb-8 pt-2">
+                <div className="absolute top-[18px] left-5 right-5 h-1 bg-gray-200 z-0">
+                  <div className="absolute top-0 left-0 h-full bg-brand-orange transition-all duration-700" style={{ width: "75%" }} />
+                </div>
+                <div className="flex justify-between relative z-10">
+                  {steps.map((step, i) => (
+                    <div key={i} className="flex flex-col items-center gap-2">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow ${step.done ? "bg-brand-orange" : "bg-gray-200"}`}>
+                        <step.icon className={`h-5 w-5 ${step.done ? "text-white" : "text-gray-400"}`} />
+                      </div>
+                      <span className={`text-xs text-center max-w-[60px] ${step.done ? "text-brand-dark font-medium" : "text-gray-400"}`}>{step.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Latest update */}
+              <div className="bg-orange-50 rounded-xl p-4 mb-6 border border-orange-100">
+                <h4 className="font-semibold text-brand-dark mb-2">Latest Update</h4>
+                <div className="flex gap-3 items-start">
+                  <div className="bg-brand-orange/10 p-2 rounded-lg">
+                    <Truck className="h-5 w-5 text-brand-orange" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-brand-dark">Package is out for delivery</p>
+                    <p className="text-sm text-brand-gray">5 April 2025 — 10:30 AM</p>
+                    <p className="text-sm text-brand-gray mt-1">Your package is on its way to the delivery address in Pune, Maharashtra.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ship details */}
+              <div className="border border-gray-100 rounded-xl overflow-hidden mb-5">
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                  <h4 className="font-semibold text-brand-dark">Delivery Details</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                  <div className="p-4">
+                    <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship From</p>
+                    <p className="font-semibold text-brand-dark">Saitrack Solutions</p>
+                  <p className="text-sm text-brand-gray">Balaji Complex, Mankoli Naka</p>
+                  <p className="text-sm text-brand-gray">Bhiwandi, Thane — 421302</p>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship To</p>
+                    <p className="font-semibold text-brand-dark">Rahul Sharma</p>
+                    <p className="text-sm text-brand-gray">Survey No. 22, Baner Road</p>
+                    <p className="text-sm text-brand-gray">Pune, Maharashtra — 411045</p>
+                  </div>
+                </div>
+              </div>
+
+              <Button variant="outline" onClick={resetDemo} className="w-full border-brand-orange text-brand-orange hover:bg-orange-50">
+                Track Another Shipment
               </Button>
-            </div>
-            
-            <div className="relative mb-8">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gray-200">
-                <div className="absolute top-0 left-0 h-full bg-brand-orange" style={{ width: '75%' }}></div>
-              </div>
-              
-              <div className="flex justify-between mt-4">
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-brand-orange flex items-center justify-center">
-                    <Package className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-xs mt-2 text-center">Picked Up</span>
-                </div>
-                
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-brand-orange flex items-center justify-center">
-                    <Truck className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-xs mt-2 text-center">In Transit</span>
-                </div>
-                
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-brand-orange flex items-center justify-center">
-                    <MapPin className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-xs mt-2 text-center">Out for Delivery</span>
-                </div>
-                
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Check className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <span className="text-xs mt-2 text-center">Delivered</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-brand-light-gray/50 rounded-lg p-4 mb-6">
-              <h4 className="font-medium mb-2">Latest Update</h4>
-              <div className="flex gap-4 items-start">
-                <div className="bg-brand-light-orange/30 p-2 rounded">
-                  <Truck className="h-5 w-5 text-brand-orange" />
-                </div>
-                <div>
-                  <p className="font-medium">Package is out for delivery</p>
-                  <p className="text-sm text-brand-gray">April 26, 2025 - 10:30 AM</p>
-                  <p className="text-sm">Your package is on its way to your delivery address.</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="border rounded-lg">
-              <div className="p-4 border-b">
-                <h4 className="font-medium">Delivery Details</h4>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x">
-                <div className="p-4">
-                  <p className="text-sm text-brand-gray">Ship From</p>
-                  <p className="font-medium">Onward Central Warehouse</p>
-                  <p className="text-sm">123 Logistics Ave, Industrial Zone</p>
-                  <p className="text-sm">New York, NY 10001</p>
-                </div>
-                
-                <div className="p-4">
-                  <p className="text-sm text-brand-gray">Ship To</p>
-                  <p className="font-medium">John Smith</p>
-                  <p className="text-sm">456 Delivery St, Downtown</p>
-                  <p className="text-sm">Boston, MA 02108</p>
-                </div>
-              </div>
             </div>
           </div>
         )}
