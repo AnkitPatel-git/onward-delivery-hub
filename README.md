@@ -32,11 +32,13 @@
 ### Installation
 
 1. **Clone the repository**:
+
    ```sh
    git clone <YOUR_GIT_URL>
    ```
 
 2. **Install dependencies**:
+
    ```sh
    npm install
    ```
@@ -49,6 +51,7 @@
 ## Development
 
 - **Build for production**:
+
   ```sh
   npm run build
   ```
