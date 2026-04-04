@@ -11,16 +11,20 @@ import {
 
 const slides = [
   {
-    url: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1400&q=80",
-    alt: "Delivery trucks on the move",
+    url: "/3.png",
+    alt: "SaiTrack Solutions air cargo hub — aircraft loading and ground fleet at airport",
   },
   {
-    url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80",
-    alt: "Warehouse logistics",
+    url: "/1.png",
+    alt: "SaiTrack Solutions cargo aircraft with global network — speed, security, reliability",
   },
   {
-    url: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1400&q=80",
-    alt: "Air cargo logistics",
+    url: "/2.png",
+    alt: "Smart fleet tracking and logistics with trucks, satellite connectivity, and live maps",
+  },
+  {
+    url: "/4.png",
+    alt: "SaiTrack Solutions roadways transport — semi-truck on highway with tracking graphics",
   },
 ];
 
