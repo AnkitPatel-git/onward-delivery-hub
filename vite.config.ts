@@ -1,6 +1,6 @@
-import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { defineConfig, loadEnv, type ProxyOptions } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -9,14 +9,35 @@ export default defineConfig(({ mode }) => {
   const n = Number.parseInt(raw, 10);
   const devServerPort = Number.isFinite(n) ? n : 8080;
 
+  const apiProxyTarget = (env.API_PROXY_TARGET || "http://localhost:3001").replace(
+    /\/$/,
+    "",
+  );
+  const websiteTrackingKey = (env.WEBSITE_TRACKING_KEY || "").trim();
+  const trackingProxy: Record<string, ProxyOptions> = {
+    "/api": {
+      target: apiProxyTarget,
+      changeOrigin: true,
+      configure(proxy) {
+        proxy.on("proxyReq", (proxyReq) => {
+          if (websiteTrackingKey) {
+            proxyReq.setHeader("x-website-tracking-key", websiteTrackingKey);
+          }
+        });
+      },
+    },
+  };
+
   return {
     server: {
       host: "::",
       port: devServerPort,
+      proxy: trackingProxy,
     },
-    plugins: [
-      react(),
-    ],
+    preview: {
+      proxy: trackingProxy,
+    },
+    plugins: [react()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

@@ -1,35 +1,120 @@
-
-import { useState } from "react";
-import { Package, Truck, MapPin, Check } from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { format, parseISO } from "date-fns";
+import { Check, ImageIcon, MapPin, Package, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  SAITRACK_AWB_HINT,
+  SAITRACK_AWB_PREFIX,
+  fetchPublicPod,
+  fetchPublicTracking,
+  formatStatusLabel,
+  normalizeSaitrackAwb,
+  progressStepCount,
+  type PublicTracking,
+} from "@/lib/tracking";
+
+const STEPS = [
+  { label: "Picked Up", icon: Package },
+  { label: "In Transit", icon: Truck },
+  { label: "Out for Delivery", icon: MapPin },
+  { label: "Delivered", icon: Check },
+] as const;
 
 const TrackingSection = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [isTracking, setIsTracking] = useState(false);
-  const [showDemo, setShowDemo] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<PublicTracking | null>(null);
+  const [podOpen, setPodOpen] = useState(false);
+  const [podLoading, setPodLoading] = useState(false);
+  const [podError, setPodError] = useState<string | null>(null);
+  const [podSrc, setPodSrc] = useState<string | null>(null);
 
-  const handleTracking = (e: React.FormEvent) => {
+  useEffect(() => {
+    return () => {
+      if (podSrc) URL.revokeObjectURL(podSrc);
+    };
+  }, [podSrc]);
+
+  const doneSteps = progressStepCount(result?.status);
+  const connectorWidth = (Math.max(doneSteps - 1, 0) / (STEPS.length - 1)) * 100;
+
+  const latest = result?.events[0] ?? null;
+  const LatestIcon = useMemo(() => iconForStatus(result?.status), [result?.status]);
+
+  const handleTracking = async (e: FormEvent) => {
     e.preventDefault();
-    if (!trackingNumber.trim()) return;
+    const trimmed = trackingNumber.trim();
+    if (!trimmed) {
+      setResult(null);
+      setError("Enter a tracking number.");
+      return;
+    }
+
+    const awbNo = normalizeSaitrackAwb(trimmed);
+    if (!awbNo) {
+      setResult(null);
+      setError(SAITRACK_AWB_HINT);
+      return;
+    }
+
+    setTrackingNumber(awbNo);
     setIsTracking(true);
-    setTimeout(() => {
+    setError(null);
+    setResult(null);
+    clearPod();
+
+    try {
+      const data = await fetchPublicTracking(awbNo);
+      setResult(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to fetch tracking right now.");
+    } finally {
       setIsTracking(false);
-      setShowDemo(true);
-    }, 1500);
+    }
   };
 
-  const resetDemo = () => {
+  const resetResult = () => {
+    setResult(null);
+    setError(null);
     setTrackingNumber("");
-    setShowDemo(false);
+    clearPod();
+    setPodOpen(false);
   };
 
-  const steps = [
-    { label: "Picked Up", icon: Package, done: true },
-    { label: "In Transit", icon: Truck, done: true },
-    { label: "Out for Delivery", icon: MapPin, done: true },
-    { label: "Delivered", icon: Check, done: false },
-  ];
+  const clearPod = () => {
+    setPodSrc((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return null;
+    });
+    setPodError(null);
+    setPodLoading(false);
+  };
+
+  const openPod = async () => {
+    if (!result?.awbNo) return;
+    setPodOpen(true);
+    if (podSrc) return;
+
+    setPodLoading(true);
+    setPodError(null);
+    try {
+      const pod = await fetchPublicPod(result.awbNo);
+      const blob = base64ToBlob(pod.imageBase64, pod.mimeType);
+      setPodSrc(URL.createObjectURL(blob));
+    } catch (err) {
+      setPodError(err instanceof Error ? err.message : "POD image not available");
+    } finally {
+      setPodLoading(false);
+    }
+  };
 
   return (
     <section id="tracking" className="py-16 bg-white">
@@ -39,20 +124,24 @@ const TrackingSection = () => {
             Real-Time <span className="text-brand-orange">Tracking</span>
           </h2>
           <p className="text-brand-gray max-w-2xl mx-auto">
-            Track your shipments in real-time with our advanced tracking system.
-            Enter your tracking number below to see a demo.
+            Track your SaiTrack shipment in real time. Enter the AWB number starting with {SAITRACK_AWB_PREFIX}.
           </p>
         </div>
 
-        {!showDemo ? (
+        {!result ? (
           <div className="max-w-md mx-auto">
-            <form onSubmit={handleTracking} className="flex gap-4 mb-4">
+            <form onSubmit={handleTracking} className="flex gap-4 mb-3">
               <Input
                 type="text"
-                placeholder="Enter tracking number"
+                placeholder="ST12345678"
                 value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
-                className="flex-1"
+                onChange={(e) => {
+                  setTrackingNumber(e.target.value);
+                  if (error) setError(null);
+                }}
+                className="flex-1 uppercase"
+                autoComplete="off"
+                spellCheck={false}
               />
               <Button
                 type="submit"
@@ -62,61 +151,88 @@ const TrackingSection = () => {
                 {isTracking ? "Tracking..." : "Track"}
               </Button>
             </form>
-            <p className="text-sm text-brand-gray text-center">
-              Try demo: <span
-                className="text-brand-orange font-semibold cursor-pointer hover:underline"
-                onClick={() => setTrackingNumber("ODH12345678")}
-              >ODH12345678</span>
-            </p>
+            {error ? (
+              <p className="text-sm text-red-600 text-center">{error}</p>
+            ) : (
+              <p className="text-sm text-brand-gray text-center">{SAITRACK_AWB_HINT}</p>
+            )}
           </div>
         ) : (
           <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            {/* Header */}
-            <div className="bg-brand-orange px-6 py-4 flex justify-between items-center">
+            <div className="bg-brand-orange px-6 py-4 flex justify-between items-center gap-4">
               <div>
                 <p className="text-white/80 text-sm">Tracking ID</p>
-                <h3 className="font-bold text-white text-lg">{trackingNumber}</h3>
+                <h3 className="font-bold text-white text-lg">{result.awbNo}</h3>
               </div>
               <div className="text-right">
-                <p className="text-white/80 text-sm">Est. Delivery</p>
-                <p className="text-white font-semibold">6 April 2025</p>
+                <p className="text-white/80 text-sm">
+                  {result.deliveryDate ? "Delivered" : "Est. Delivery"}
+                </p>
+                <p className="text-white font-semibold">
+                  {formatDateOnly(result.deliveryDate ?? result.expectedDeliveryDate) ?? "—"}
+                </p>
               </div>
             </div>
 
             <div className="p-6">
-              {/* Progress bar */}
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-sm font-semibold text-brand-dark">
+                  Status: <span className="text-brand-orange">{formatStatusLabel(result.status)}</span>
+                </p>
+              </div>
+
               <div className="relative mb-8 pt-2">
                 <div className="absolute top-[18px] left-5 right-5 h-1 bg-gray-200 z-0">
-                  <div className="absolute top-0 left-0 h-full bg-brand-orange transition-all duration-700" style={{ width: "75%" }} />
+                  <div
+                    className="absolute top-0 left-0 h-full bg-brand-orange transition-all duration-700"
+                    style={{ width: `${connectorWidth}%` }}
+                  />
                 </div>
                 <div className="flex justify-between relative z-10">
-                  {steps.map((step, i) => (
-                    <div key={i} className="flex flex-col items-center gap-2">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow ${step.done ? "bg-brand-orange" : "bg-gray-200"}`}>
-                        <step.icon className={`h-5 w-5 ${step.done ? "text-white" : "text-gray-400"}`} />
+                  {STEPS.map((step, i) => {
+                    const done = i < doneSteps;
+                    return (
+                      <div key={step.label} className="flex flex-col items-center gap-2">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center shadow ${
+                            done ? "bg-brand-orange" : "bg-gray-200"
+                          }`}
+                        >
+                          <step.icon className={`h-5 w-5 ${done ? "text-white" : "text-gray-400"}`} />
+                        </div>
+                        <span
+                          className={`text-xs text-center max-w-[60px] ${
+                            done ? "text-brand-dark font-medium" : "text-gray-400"
+                          }`}
+                        >
+                          {step.label}
+                        </span>
                       </div>
-                      <span className={`text-xs text-center max-w-[60px] ${step.done ? "text-brand-dark font-medium" : "text-gray-400"}`}>{step.label}</span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {latest && (
+                <div className="bg-orange-50 rounded-xl p-4 mb-6 border border-orange-100">
+                  <h4 className="font-semibold text-brand-dark mb-2">Latest Update</h4>
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-brand-orange/10 p-2 rounded-lg">
+                      <LatestIcon className="h-5 w-5 text-brand-orange" />
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Latest update */}
-              <div className="bg-orange-50 rounded-xl p-4 mb-6 border border-orange-100">
-                <h4 className="font-semibold text-brand-dark mb-2">Latest Update</h4>
-                <div className="flex gap-3 items-start">
-                  <div className="bg-brand-orange/10 p-2 rounded-lg">
-                    <Truck className="h-5 w-5 text-brand-orange" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-brand-dark">Package is out for delivery</p>
-                    <p className="text-sm text-brand-gray">5 April 2025 — 10:30 AM</p>
-                    <p className="text-sm text-brand-gray mt-1">Your package is on its way to the delivery address in Pune, Maharashtra.</p>
+                    <div>
+                      <p className="font-medium text-brand-dark">{formatStatusLabel(latest.status)}</p>
+                      <p className="text-sm text-brand-gray">{formatEventAt(latest.eventAt)}</p>
+                      {(latest.location || latest.remark) && (
+                        <p className="text-sm text-brand-gray mt-1">
+                          {[latest.remark, latest.location].filter(Boolean).join(" — ")}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Ship details */}
               <div className="border border-gray-100 rounded-xl overflow-hidden mb-5">
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                   <h4 className="font-semibold text-brand-dark">Delivery Details</h4>
@@ -124,28 +240,127 @@ const TrackingSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                   <div className="p-4">
                     <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship From</p>
-                    <p className="font-semibold text-brand-dark">SaiTrackSolutions</p>
-                  <p className="text-sm text-brand-gray">Balaji Complex, Mankoli Naka</p>
-                  <p className="text-sm text-brand-gray">Bhiwandi, Thane — 421302</p>
+                    <p className="font-semibold text-brand-dark">{result.shipperName || "—"}</p>
+                    <p className="text-sm text-brand-gray">{result.origin || "—"}</p>
+                    {result.bookingDate && (
+                      <p className="text-sm text-brand-gray mt-1">Booked {formatDateOnly(result.bookingDate)}</p>
+                    )}
                   </div>
                   <div className="p-4">
                     <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship To</p>
-                    <p className="font-semibold text-brand-dark">Rahul Sharma</p>
-                    <p className="text-sm text-brand-gray">Survey No. 22, Baner Road</p>
-                    <p className="text-sm text-brand-gray">Pune, Maharashtra — 411045</p>
+                    <p className="font-semibold text-brand-dark">{result.consignee || "—"}</p>
+                    <p className="text-sm text-brand-gray">{result.destination || "—"}</p>
                   </div>
                 </div>
               </div>
 
-              <Button variant="outline" onClick={resetDemo} className="w-full border-brand-orange text-brand-orange hover:bg-orange-50">
-                Track Another Shipment
-              </Button>
+              {result.events.length > 0 && (
+                <div className="border border-gray-100 rounded-xl overflow-hidden mb-5">
+                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                    <h4 className="font-semibold text-brand-dark">Tracking History</h4>
+                  </div>
+                  <ol className="divide-y divide-gray-100">
+                    {result.events.map((event, index) => (
+                      <li key={`${event.eventAt}-${event.status}-${index}`} className="px-4 py-3">
+                        <p className="font-medium text-brand-dark">{formatStatusLabel(event.status)}</p>
+                        <p className="text-sm text-brand-gray">{formatEventAt(event.eventAt)}</p>
+                        {(event.location || event.remark) && (
+                          <p className="text-sm text-brand-gray mt-0.5">
+                            {[event.remark, event.location].filter(Boolean).join(" — ")}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                {result.hasPod && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={openPod}
+                    className="flex-1 border-brand-orange text-brand-orange hover:bg-orange-50"
+                  >
+                    <ImageIcon className="h-4 w-4" />
+                    View POD
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={resetResult}
+                  className="flex-1 border-brand-orange text-brand-orange hover:bg-orange-50"
+                >
+                  Track Another Shipment
+                </Button>
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      <Dialog
+        open={podOpen}
+        onOpenChange={(open) => {
+          setPodOpen(open);
+          if (!open) setPodError(null);
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Proof of Delivery</DialogTitle>
+          </DialogHeader>
+          {podLoading && <p className="text-sm text-brand-gray">Loading POD…</p>}
+          {podError && <p className="text-sm text-red-600">{podError}</p>}
+          {podSrc && (
+            <img src={podSrc} alt="Proof of delivery" className="w-full rounded-md border border-gray-100" />
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
+
+function iconForStatus(status: string | null | undefined) {
+  switch (status) {
+    case "DELIVERED":
+    case "PARTIAL_DELIVERED":
+    case "RETURNED":
+      return Check;
+    case "OUT_FOR_DELIVERY":
+    case "RETURN_OUT_FOR_DELIVERY":
+    case "DELIVERY_ATTEMPTED":
+      return MapPin;
+    case "IN_TRANSIT":
+    case "PAPER_WORK_INSCAN":
+    case "RETURN_IN_TRANSIT":
+      return Truck;
+    default:
+      return Package;
+  }
+}
+
+function formatDateOnly(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const [year, month, day] = value.slice(0, 10).split("-").map(Number);
+  if (!year || !month || !day) return value;
+  return format(new Date(year, month - 1, day), "d MMMM yyyy");
+}
+
+function formatEventAt(value: string): string {
+  const parsed = parseISO(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return format(parsed, "d MMMM yyyy — h:mm a");
+}
+
+function base64ToBlob(base64: string, mimeType: string): Blob {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
+}
 
 export default TrackingSection;
