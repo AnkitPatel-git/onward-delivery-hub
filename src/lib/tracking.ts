@@ -6,6 +6,15 @@ export const SAITRACK_AWB_HINT =
 const TRACKING_PATH = "/api/public/tracking";
 const MAX_AWB_LENGTH = 64;
 
+function trackingApiBase(): string {
+  return (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+}
+
+function trackingHeaders(): HeadersInit {
+  const key = (import.meta.env.VITE_WEBSITE_TRACKING_KEY ?? "").trim();
+  return key ? { "x-website-tracking-key": key } : {};
+}
+
 const STATUS_LABELS: Record<string, string> = {
   BOOKED: "Booked",
   MANIFESTED: "Manifested",
@@ -100,15 +109,19 @@ export function progressStepCount(status: string | null | undefined): number {
 }
 
 export async function fetchPublicTracking(awbNo: string): Promise<PublicTracking> {
-  return getJson<PublicTracking>(`${TRACKING_PATH}/${encodeURIComponent(awbNo)}`);
+  return getJson<PublicTracking>(
+    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}`,
+  );
 }
 
 export async function fetchPublicPod(awbNo: string): Promise<PublicPod> {
-  return getJson<PublicPod>(`${TRACKING_PATH}/${encodeURIComponent(awbNo)}/pod`);
+  return getJson<PublicPod>(
+    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}/pod`,
+  );
 }
 
 async function getJson<T>(url: string): Promise<T> {
-  const response = await fetch(url);
+  const response = await fetch(url, { headers: trackingHeaders() });
   const body = (await response.json().catch(() => null)) as
     | ApiErrorBody
     | ApiSuccessBody<T>
@@ -118,21 +131,26 @@ async function getJson<T>(url: string): Promise<T> {
     throw new Error(messageFromBody(body, response.status));
   }
 
-  if (!body || !("success" in body) || !body.success || !("data" in body) || !body.data) {
+  if (!body || !("success" in body) || !body.success || !("data" in body) || body.data == null) {
     throw new Error("Unable to fetch tracking right now.");
   }
 
-  return body.data;
+  return body.data as T;
 }
 
-function messageFromBody(body: ApiErrorBody | ApiSuccessBody<unknown> | null, status: number): string {
+function messageFromBody(
+  body: ApiErrorBody | ApiSuccessBody<unknown> | null,
+  status: number,
+): string {
+  const message =
+    body && "message" in body && typeof body.message === "string"
+      ? body.message.trim()
+      : "";
   if (status === 404) {
-    const notFound = typeof body?.message === "string" ? body.message.trim() : "";
-    return notFound || "No shipment found for this AWB.";
+    return message || "No shipment found for this AWB.";
   }
   if (status === 401 || status === 403 || status >= 500) {
     return "Unable to fetch tracking right now.";
   }
-  const message = typeof body?.message === "string" ? body.message.trim() : "";
   return message || "Unable to fetch tracking right now.";
 }
