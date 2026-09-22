@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   SAITRACK_AWB_HINT,
-  SAITRACK_AWB_PREFIX,
   fetchPublicPod,
   fetchPublicTracking,
   formatStatusLabel,
@@ -124,7 +123,7 @@ const TrackingSection = () => {
             Real-Time <span className="text-brand-orange">Tracking</span>
           </h2>
           <p className="text-brand-gray max-w-2xl mx-auto">
-            Track your SaiTrack shipment in real time. Enter the AWB number starting with {SAITRACK_AWB_PREFIX}.
+            Track your SaiTrack shipment in real time. Enter ST1234 or 1234.
           </p>
         </div>
 
@@ -133,7 +132,7 @@ const TrackingSection = () => {
             <form onSubmit={handleTracking} className="flex gap-4 mb-3">
               <Input
                 type="text"
-                placeholder="ST12345678"
+                placeholder="ST1234 or 1234"
                 value={trackingNumber}
                 onChange={(e) => {
                   setTrackingNumber(e.target.value);

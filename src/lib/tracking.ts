@@ -1,7 +1,7 @@
 export const SAITRACK_AWB_PREFIX = "ST";
 
 export const SAITRACK_AWB_HINT =
-  "SaiTrack AWBs start with ST. Numbers without that prefix are not searched.";
+  "You can search ST1234 or 1234. Both show ST1234.";
 
 const TRACKING_PATH = "/api/public/tracking";
 const MAX_AWB_LENGTH = 64;
@@ -75,10 +75,16 @@ type ApiSuccessBody<T> = {
 
 export function normalizeSaitrackAwb(raw: string): string | null {
   const awb = raw.trim().replace(/\s+/g, "").toUpperCase();
-  if (!awb.startsWith(SAITRACK_AWB_PREFIX)) return null;
-  if (awb.length <= SAITRACK_AWB_PREFIX.length) return null;
-  if (awb.length > MAX_AWB_LENGTH) return null;
-  return awb;
+  if (!awb || awb.length > MAX_AWB_LENGTH) return null;
+  if (awb.startsWith(SAITRACK_AWB_PREFIX)) {
+    if (awb.length <= SAITRACK_AWB_PREFIX.length) return null;
+    return awb;
+  }
+  if (/^\d+$/.test(awb)) {
+    const withPrefix = `${SAITRACK_AWB_PREFIX}${awb}`;
+    return withPrefix.length <= MAX_AWB_LENGTH ? withPrefix : null;
+  }
+  return null;
 }
 
 export function formatStatusLabel(status: string | null | undefined): string {
