@@ -1,8 +1,5 @@
 export const SAITRACK_AWB_PREFIX = "ST";
 
-export const SAITRACK_AWB_HINT =
-  "You can search ST1234 or 1234. Both show ST1234.";
-
 const TRACKING_PATH = "/api/public/tracking";
 const MAX_AWB_LENGTH = 64;
 

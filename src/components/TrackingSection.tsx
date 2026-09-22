@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  SAITRACK_AWB_HINT,
   fetchPublicPod,
   fetchPublicTracking,
   formatStatusLabel,
@@ -60,7 +59,7 @@ const TrackingSection = () => {
     const awbNo = normalizeSaitrackAwb(trimmed);
     if (!awbNo) {
       setResult(null);
-      setError(SAITRACK_AWB_HINT);
+      setError("Enter a valid AWB number.");
       return;
     }
 
@@ -123,7 +122,7 @@ const TrackingSection = () => {
             Real-Time <span className="text-brand-orange">Tracking</span>
           </h2>
           <p className="text-brand-gray max-w-2xl mx-auto">
-            Track your SaiTrack shipment in real time. Enter ST1234 or 1234.
+            Track your SaiTrack shipment in real time.
           </p>
         </div>
 
@@ -132,7 +131,7 @@ const TrackingSection = () => {
             <form onSubmit={handleTracking} className="flex gap-4 mb-3">
               <Input
                 type="text"
-                placeholder="ST1234 or 1234"
+                placeholder="AWB number"
                 value={trackingNumber}
                 onChange={(e) => {
                   setTrackingNumber(e.target.value);
@@ -152,9 +151,7 @@ const TrackingSection = () => {
             </form>
             {error ? (
               <p className="text-sm text-red-600 text-center">{error}</p>
-            ) : (
-              <p className="text-sm text-brand-gray text-center">{SAITRACK_AWB_HINT}</p>
-            )}
+            ) : null}
           </div>
         ) : (
           <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
