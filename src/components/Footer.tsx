@@ -52,9 +52,9 @@ const Footer = () => {
           {/* Brand column */}
           <div className="space-y-5">
             <img
-              src="/SaiTrackSolutions LOGO.png"
+              src="/saitrack-logo.png"
               alt="SaiTrackSolutions"
-              className="h-14 w-auto object-contain brightness-0 invert"
+              className="h-14 w-auto object-contain"
             />
             <p className="text-gray-400 text-sm leading-relaxed">
               Professional PAN India courier &amp; cargo solutions since 2018 — delivering excellence, reliability, and efficiency.

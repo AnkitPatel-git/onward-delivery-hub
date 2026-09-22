@@ -35,7 +35,7 @@ const Navbar = () => {
           {/* Logo */}
           <a href="/" className="flex items-center">
             <img
-              src="/SaiTrackSolutions LOGO.png"
+              src="/saitrack-logo.png"
               alt="SaiTrackSolutions"
               className="h-12 object-contain"
             />
