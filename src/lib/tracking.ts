@@ -70,6 +70,33 @@ type ApiSuccessBody<T> = {
   data: T;
 };
 
+export function isSaitrackAwb(awbNo: string): boolean {
+  const compact = awbNo.trim().replace(/\s+/g, "").toUpperCase();
+  return compact.startsWith(SAITRACK_AWB_PREFIX) && compact.length > SAITRACK_AWB_PREFIX.length;
+}
+
+/** Customer-facing AWB. The ST prefix stays internal and is never shown. */
+export function displayAwb(awbNo: string): string {
+  const compact = awbNo.trim().replace(/\s+/g, "").toUpperCase();
+  if (compact.startsWith(SAITRACK_AWB_PREFIX) && compact.length > SAITRACK_AWB_PREFIX.length) {
+    return compact.slice(SAITRACK_AWB_PREFIX.length);
+  }
+  return compact;
+}
+
+/** Strip a leading ST prefix while the customer types or pastes an AWB. */
+export function customerAwbInput(raw: string): string {
+  return raw.replace(/^\s*st\s*/i, "");
+}
+
+const AWB_PREFIX_IN_TEXT = /\bST\s*(?=\d)/gi;
+
+/** Remove ST from any customer-visible tracking text. */
+export function hideSaitrackPrefix(text: string | null | undefined): string {
+  if (!text) return "";
+  return text.replace(AWB_PREFIX_IN_TEXT, "");
+}
+
 export function normalizeSaitrackAwb(raw: string): string | null {
   const awb = raw.trim().replace(/\s+/g, "").toUpperCase();
   if (!awb || awb.length > MAX_AWB_LENGTH) return null;
@@ -112,14 +139,21 @@ export function progressStepCount(status: string | null | undefined): number {
 }
 
 export async function fetchPublicTracking(awbNo: string): Promise<PublicTracking> {
-  return getJson<PublicTracking>(
-    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}`,
+  const data = await getJson<PublicTracking>(
+    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}?brand=ST`,
   );
+  if (!isSaitrackAwb(data.awbNo)) {
+    throw new Error("No shipment found for this AWB.");
+  }
+  return data;
 }
 
 export async function fetchPublicPod(awbNo: string): Promise<PublicPod> {
+  if (!isSaitrackAwb(awbNo)) {
+    throw new Error("POD image not available");
+  }
   return getJson<PublicPod>(
-    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}/pod`,
+    `${trackingApiBase()}${TRACKING_PATH}/${encodeURIComponent(awbNo)}/pod?brand=ST`,
   );
 }
 

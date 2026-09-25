@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { format, parseISO } from "date-fns";
 import { Check, ImageIcon, MapPin, Package, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  customerAwbInput,
+  displayAwb,
   fetchPublicPod,
   fetchPublicTracking,
   formatStatusLabel,
+  hideSaitrackPrefix,
   normalizeSaitrackAwb,
   progressStepCount,
   type PublicTracking,
 } from "@/lib/tracking";
+
+const LAST_TRACKING_KEY = "onward.lastTracking";
 
 const STEPS = [
   { label: "Picked Up", icon: Package },
@@ -34,6 +39,25 @@ const TrackingSection = () => {
   const [podLoading, setPodLoading] = useState(false);
   const [podError, setPodError] = useState<string | null>(null);
   const [podSrc, setPodSrc] = useState<string | null>(null);
+  const searchGeneration = useRef(0);
+
+  useEffect(() => {
+    const stored = readStoredTracking();
+    if (!stored) return;
+    const generation = searchGeneration.current;
+    setResult(stored);
+    setTrackingNumber(displayAwb(stored.awbNo));
+
+    fetchPublicTracking(stored.awbNo)
+      .then((data) => {
+        if (searchGeneration.current !== generation) return;
+        setResult(data);
+        writeStoredTracking(data);
+      })
+      .catch(() => {
+        // Keep the stored result if the refresh request fails.
+      });
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -63,19 +87,25 @@ const TrackingSection = () => {
       return;
     }
 
-    setTrackingNumber(awbNo);
+    const generation = searchGeneration.current + 1;
+    searchGeneration.current = generation;
+    setTrackingNumber(displayAwb(awbNo));
     setIsTracking(true);
     setError(null);
     setResult(null);
     clearPod();
+    clearStoredTracking();
 
     try {
       const data = await fetchPublicTracking(awbNo);
+      if (searchGeneration.current !== generation) return;
       setResult(data);
+      writeStoredTracking(data);
     } catch (err) {
+      if (searchGeneration.current !== generation) return;
       setError(err instanceof Error ? err.message : "Unable to fetch tracking right now.");
     } finally {
-      setIsTracking(false);
+      if (searchGeneration.current === generation) setIsTracking(false);
     }
   };
 
@@ -134,7 +164,7 @@ const TrackingSection = () => {
                 placeholder="AWB number"
                 value={trackingNumber}
                 onChange={(e) => {
-                  setTrackingNumber(e.target.value);
+                  setTrackingNumber(customerAwbInput(e.target.value));
                   if (error) setError(null);
                 }}
                 className="flex-1 uppercase"
@@ -158,7 +188,7 @@ const TrackingSection = () => {
             <div className="bg-brand-orange px-6 py-4 flex justify-between items-center gap-4">
               <div>
                 <p className="text-white/80 text-sm">Tracking ID</p>
-                <h3 className="font-bold text-white text-lg">{result.awbNo}</h3>
+                <h3 className="font-bold text-white text-lg">{displayAwb(result.awbNo)}</h3>
               </div>
               <div className="text-right">
                 <p className="text-white/80 text-sm">
@@ -221,7 +251,9 @@ const TrackingSection = () => {
                       <p className="text-sm text-brand-gray">{formatEventAt(latest.eventAt)}</p>
                       {(latest.location || latest.remark) && (
                         <p className="text-sm text-brand-gray mt-1">
-                          {[latest.remark, latest.location].filter(Boolean).join(" — ")}
+                          {[hideSaitrackPrefix(latest.remark), hideSaitrackPrefix(latest.location)]
+                            .filter(Boolean)
+                            .join(" — ")}
                         </p>
                       )}
                     </div>
@@ -236,16 +268,16 @@ const TrackingSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                   <div className="p-4">
                     <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship From</p>
-                    <p className="font-semibold text-brand-dark">{result.shipperName || "—"}</p>
-                    <p className="text-sm text-brand-gray">{result.origin || "—"}</p>
+                    <p className="font-semibold text-brand-dark">{hideSaitrackPrefix(result.shipperName) || "—"}</p>
+                    <p className="text-sm text-brand-gray">{hideSaitrackPrefix(result.origin) || "—"}</p>
                     {result.bookingDate && (
                       <p className="text-sm text-brand-gray mt-1">Booked {formatDateOnly(result.bookingDate)}</p>
                     )}
                   </div>
                   <div className="p-4">
                     <p className="text-xs text-brand-gray uppercase tracking-wide mb-1">Ship To</p>
-                    <p className="font-semibold text-brand-dark">{result.consignee || "—"}</p>
-                    <p className="text-sm text-brand-gray">{result.destination || "—"}</p>
+                    <p className="font-semibold text-brand-dark">{hideSaitrackPrefix(result.consignee) || "—"}</p>
+                    <p className="text-sm text-brand-gray">{hideSaitrackPrefix(result.destination) || "—"}</p>
                   </div>
                 </div>
               </div>
@@ -262,7 +294,9 @@ const TrackingSection = () => {
                         <p className="text-sm text-brand-gray">{formatEventAt(event.eventAt)}</p>
                         {(event.location || event.remark) && (
                           <p className="text-sm text-brand-gray mt-0.5">
-                            {[event.remark, event.location].filter(Boolean).join(" — ")}
+                            {[hideSaitrackPrefix(event.remark), hideSaitrackPrefix(event.location)]
+                              .filter(Boolean)
+                              .join(" — ")}
                           </p>
                         )}
                       </li>
@@ -317,6 +351,26 @@ const TrackingSection = () => {
     </section>
   );
 };
+
+function readStoredTracking(): PublicTracking | null {
+  try {
+    const raw = sessionStorage.getItem(LAST_TRACKING_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PublicTracking;
+    if (!parsed?.awbNo || !Array.isArray(parsed.events)) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredTracking(data: PublicTracking) {
+  sessionStorage.setItem(LAST_TRACKING_KEY, JSON.stringify(data));
+}
+
+function clearStoredTracking() {
+  sessionStorage.removeItem(LAST_TRACKING_KEY);
+}
 
 function iconForStatus(status: string | null | undefined) {
   switch (status) {
